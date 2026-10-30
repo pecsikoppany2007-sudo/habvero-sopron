@@ -1,0 +1,14 @@
+<!doctype html><meta charset=utf-8><style>html,body{margin:0;background:transparent}canvas{width:1600px;height:1600px;display:block}</style>
+<canvas id=c></canvas>
+<script type=module>
+import { mountHero } from './site/js/hero3d.js';
+const S = +(new URLSearchParams(location.search).get('s')||1600);
+const c = document.getElementById('c'); c.style.width=c.style.height=S+'px';
+const ry = new URLSearchParams(location.search).get('ry');
+let noz;
+window.ctl = await mountHero(c, { force:true, intro:false, scroll:false, poster:null, hero:c, dpr:1, preserveDrawingBuffer:true, float:false, mode:'rich', rest: ry!==null ? {rx:0, ry:+ry} : undefined,
+  onNozzle:(p)=>{ noz=p; } });
+await new Promise(r=>setTimeout(r,300));
+ctl.render(); ctl.nozzle();
+window.result = { url: c.toDataURL('image/png'), noz: {x:noz.x/S, y:noz.y/S}, stats: ctl.stats() };
+</script>

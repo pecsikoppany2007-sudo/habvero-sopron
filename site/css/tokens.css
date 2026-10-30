@@ -1,0 +1,110 @@
+/* HabVero Cukrász Kellékek: design tokens v1 (08 dizájner, 2026-10-30)
+   Forrás: dizajn.md. Minden szín, betű, méret, térköz, mozgás itt van; a kódban ne legyen nyers érték.
+   Betűk: @fontsource/noto-serif-display 5.3.0 (200, 300) + @fontsource/hanken-grotesk 5.3.0 (400, 500), OFL-1.1.
+   A fájlokat a builder másolja: site/fonts/ (a latin-ext fájlokat pyftsubset-tel U+0100-017F-re szűkítve). */
+
+/* ---------- Betűk (self-host, latin + latin-ext) ---------- */
+@font-face{font-family:"Noto Serif Display";font-style:normal;font-weight:200;font-display:swap;
+  src:url("../fonts/noto-serif-display-latin-200-normal.woff2") format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Noto Serif Display";font-style:normal;font-weight:200;font-display:swap;
+  src:url("../fonts/noto-serif-display-latin-ext-200-normal.woff2") format("woff2");
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Noto Serif Display";font-style:normal;font-weight:300;font-display:swap;
+  src:url("../fonts/noto-serif-display-latin-300-normal.woff2") format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Noto Serif Display";font-style:normal;font-weight:300;font-display:swap;
+  src:url("../fonts/noto-serif-display-latin-ext-300-normal.woff2") format("woff2");
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:400;font-display:swap;
+  src:url("../fonts/hanken-grotesk-latin-400-normal.woff2") format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:400;font-display:swap;
+  src:url("../fonts/hanken-grotesk-latin-ext-400-normal.woff2") format("woff2");
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:500;font-display:swap;
+  src:url("../fonts/hanken-grotesk-latin-500-normal.woff2") format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:500;font-display:swap;
+  src:url("../fonts/hanken-grotesk-latin-ext-500-normal.woff2") format("woff2");
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+
+:root{
+  /* ---------- Szín: a logóból és a bolt saját posztjaiból mérve ----------
+     logó kör krém #FEFBF8, logó külső bézs #EBE3DA, ecsetfolt #EEE2D6, logó felirat #4A4643, FB "2022" púder #E0AFAC */
+  --paper:      #FBF7F2;  /* alap háttér (logó kör krémje, egy árnyalattal melegebb) */
+  --shell:      #EFE6DC;  /* második felület: sávok, kártya-alátét, slot-üres állapot (logó ecsetfolt) */
+  --ink:        #3E3532;  /* szöveg, gomb (logó felirat, kakaó felé mélyítve); paper-en 11.2:1, shell-en 9.7:1 */
+  --ink-soft:   #6E615B;  /* másodlagos szöveg; paper-en 5.6:1, shell-en 4.8:1, pink-pale-en 4.55:1 (AA) */
+  --line:       #5A4640;  /* AZ egy díszítővonal: habzsák-vonal, hajszálkeretek, táblázatvonal; paper-en 8.3:1 */
+  --pink:       #E2B2AD;  /* EGY akcentus: csak felület (gomb-hover kitöltés, nyitva-rozetta, 3D habzsák). Pink szövegszínként tilos; pink felületen a szöveg ink (6.4:1) */
+  --pink-pale:  #F3DCD8;  /* púder felület (törzsvásárlói sáv), ink rajta 9.1:1 */
+  --veil:       rgba(251,247,242,.62); /* krém fátyol a hátrébb került rétegeken (NEM sötétítés) */
+  --shadow:     rgba(62,53,50,.16);    /* egyetlen árnyékszín: mélység-kártya alá, 3D kontakt árnyék */
+
+  /* 3D anyagok (csak a hero tárgyhoz, three.js) */
+  --m-cream:    #F2E8DC;  /* habverő nyél, drótok */
+  --m-dollop:   #FAF3E9;  /* tejszínhab a habverőn */
+  --m-bag:      #E3B3AE;  /* habzsák teste */
+  --m-fan:      #FBF6F0;  /* habzsák csavart teteje */
+  --m-metal:    #D8C6AE;  /* csőr és gyűrű: pezsgőszínű szatén fém, az egyetlen fém */
+
+  /* ---------- Betű ---------- */
+  --f-display: "Noto Serif Display", "Iowan Old Style", Georgia, serif;   /* 200: óriás szómárka, h1; 300: h2, h3 */
+  --f-text:    "Hanken Grotesk", "Segoe UI", system-ui, sans-serif;       /* 400 szöveg, 500 gomb/nav/táblázatfej */
+
+  /* Típusskála (clamp, 360 → 1440 px) */
+  --t-mark: clamp(5.25rem, 4rem + 13vw, 16rem);     /* "HabVero" óriás szómárka a 3D tárgy mögött, 200, aria-hidden */
+  --t-h1:   clamp(2.5rem, 1.9rem + 3.2vw, 5.25rem); /* 200 */
+  --t-h2:   clamp(2.125rem, 1.6rem + 2.6vw, 4rem);  /* 300 */
+  --t-h3:   clamp(1.375rem, 1.2rem + .9vw, 1.875rem);/* 300 */
+  --t-index:clamp(2.25rem, 1.4rem + 4.2vw, 5.5rem); /* Kínálat index-sorok, 200 */
+  --t-lede: clamp(1.125rem, 1.05rem + .4vw, 1.375rem); /* 400 */
+  --t-body: 1.0625rem;  /* 17 px, 400 */
+  --t-small:.9375rem;   /* 15 px */
+  --t-ui:   .8125rem;   /* 13 px, 500, nagybetű, --track-ui; CSAK gomb, nav, táblázatfej (nem kicker cím fölött) */
+  --lh-tight:1.04; --lh-head:1.12; --lh-body:1.6;
+  --track-mark:-.012em; --track-head:-.005em; --track-ui:.08em;
+  --measure: 62ch;
+
+  /* ---------- Rács és térköz ---------- */
+  --cols: 12;
+  --page-max: 1440px;
+  --margin: clamp(16px, 5vw, 80px);
+  --gutter: clamp(16px, 2vw, 28px);
+  --s-1:4px; --s-2:8px; --s-3:12px; --s-4:16px; --s-5:24px; --s-6:32px; --s-7:48px; --s-8:72px; --s-9:112px; --s-10:168px;
+  /* szakaszonként eltérő ritmus (nem-ai-kinezet 6.) */
+  --pad-kinalat:   clamp(96px, 12vw, 168px);
+  --pad-alkotasok: clamp(72px, 8vw, 112px);
+  --pad-kartya:    clamp(48px, 5vw, 72px);
+  --pad-latogatas: clamp(96px, 12vw, 168px);
+
+  /* ---------- Vonal, keret, gomb ---------- */
+  --hair: 1px;            /* minden vonal; nincs 2 px-es dísz */
+  --frame-offset: 10px;   /* hajszálkeret eltolása a fotó körül */
+  --mat-offset: 14px;     /* mélység-kártya papír-alátét eltolása */
+  --radius: 0;            /* szögletes minden: gomb, kártya, kép, mező */
+  --btn-h: 52px; --btn-h-sm: 40px; --btn-px: 28px;
+  --focus: 2px solid var(--ink); --focus-offset: 3px;
+  --nav-h: 64px;
+
+  /* ---------- Mozgás ---------- */
+  --e-out:  cubic-bezier(.16,1,.3,1);   /* expo.out: felfedés, belépés */
+  --e-draw: cubic-bezier(.45,0,.55,1);  /* power2.inOut: vonalrajzolás */
+  --e-ui:   cubic-bezier(.22,.61,.36,1);/* hover/focus */
+  --d-ui: 200ms;  --d-ui-fast: 160ms;  --d-reveal: 900ms;  --d-line-per-100px: 70ms;
+  --tau-pointer: 120ms; --tau-scroll: 110ms; /* exponenciális simítás időállandói (JS olvassa) */
+  --tilt-max: 7deg;       /* mélység-kártya max dőlés egérre */
+  --magnet: .3; --magnet-radius: 40px;
+  --grain-opacity: .05;
+  --persp-flow: 1400px; --persp-card: 900px; --persp-turntable: 1600px;
+
+  /* ---------- Rétegek ---------- */
+  --z-mark:0; --z-canvas:1; --z-hero-copy:2; --z-line:3; --z-main:1; --z-footer:0; --z-nav:50; --z-cursor:90; --z-grain:100;
+}
+
+/* Hangulat-osztályok, amiket a JS a <html>-re tesz (dizajn.md 12.): .rich (egér + valódi GPU + nincs reduced-motion),
+   .touch (érintés: időzített egyszeri mozgás), .still (reduced-motion / save-data / nincs WebGL: álló, kész állapot). */
+@media (prefers-reduced-motion: reduce){
+  :root{ --d-reveal: 1ms; --d-ui: 1ms; --d-ui-fast: 1ms; }
+}

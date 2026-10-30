@@ -1,0 +1,11 @@
+import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
+import fs from 'fs';
+const [,, url, out, w='1600', h='1600'] = process.argv;
+const b = await chromium.launch({ args:['--use-angle=swiftshader','--enable-unsafe-swiftshader','--ignore-gpu-blocklist'] });
+const p = await b.newPage({ viewport:{width:+w,height:+h} });
+p.on('console', m=>console.log('console:', m.text())); p.on('pageerror', e=>console.log('pageerror:', e.message));
+await p.goto(url); await p.waitForFunction(()=>window.result, null, {timeout:60000});
+const r = await p.evaluate(()=>window.result);
+fs.writeFileSync(out, Buffer.from(r.url.split(',')[1],'base64'));
+console.log(JSON.stringify({noz:r.noz, stats:r.stats}));
+await b.close();

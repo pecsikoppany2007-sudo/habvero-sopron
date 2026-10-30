@@ -1,0 +1,29 @@
+<!doctype html><html class="rich"><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+<style>
+html,body{margin:0;background:#FBF7F2;font-family:sans-serif}
+.hero{position:relative;height:100svh;min-height:680px}
+.hero__stage{position:absolute;inset:0}
+.hero__poster,.hero__canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.hero__poster{object-fit:contain;object-position:52% 50%;transition:opacity .3s}
+.hero__canvas{opacity:0;transition:opacity .3s}
+.hero__canvas[data-ready]{opacity:1}
+.hero__canvas[data-ready] ~ .hero__poster{opacity:0}
+#dot{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#c03;z-index:5}
+.next{height:200vh;background:#EFE6DC}
+@media (max-width:699px){.hero__stage{bottom:auto;height:58svh}.hero__poster{object-fit:cover;object-position:50% 50%}}
+body.hide-canvas .hero__canvas{visibility:hidden}
+body.hide-poster .hero__poster{visibility:hidden}
+</style>
+<section id=top class=hero><div class=hero__stage>
+<canvas id=hero3d class=hero__canvas></canvas>
+<img class=hero__poster src="site/img/hero-poster.webp" alt="">
+<div id=dot></div></div></section><div class=next></div>
+<script type=module>
+const q=new URLSearchParams(location.search);
+if(q.get('intro')) document.documentElement.classList.add('intro-on');
+if(q.get('touch')) document.documentElement.className='touch'+(q.get('intro')?' intro-on':'');
+const m=await import('./site/js/hero3d.js');
+const c=document.getElementById('hero3d'), dot=document.getElementById('dot');
+window.ctl=await m.mountHero(c,{force:true,preserveDrawingBuffer:true,onNozzle:(x,y)=>{dot.style.left=x+'px';dot.style.top=y+'px';}});
+window.mounted=true;
+</script>
