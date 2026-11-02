@@ -68,9 +68,16 @@
   .hero__h1{font-size:clamp(3.4rem,13cqi,6.4rem)}
   .hero__vis{justify-self:center;width:min(90%,560px,calc((100svh - var(--nav-h) - 130px) * .8))}
 }
+/* plecsni a fotó mellé, ne takarja (kopi, 2026-11-02) */
+@media (min-width:1280px){ .badge{left:auto;right:calc(100% + 34px);bottom:12%} }
+@media (max-width:1279px){
+  .hero__vis{--bh:clamp(124px,12vw,168px);padding-bottom:calc(var(--bh) + 40px)}
+  .badge{left:auto;right:4%;bottom:0}
+  .hs--2{bottom:calc(var(--bh) + 64px)}
+  .hs--4{bottom:calc(var(--bh) + 14px)}
+}
 @media (max-width:699px){
   .hero__vis{width:min(80%,420px)}
-  .badge{left:-34px}
   .hs--3{right:-14%}
   .hs--2{right:-10%}
 }

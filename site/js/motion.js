@@ -310,7 +310,7 @@ function jar() {
   pills.forEach((p) => p.classList.add('is-wait'));                  // üres üveg, amíg a címkék be nem esnek
   const pre = new IntersectionObserver(([e]) => {
     if (!e.isIntersecting) return; pre.disconnect();
-    loadScript('/js/vendor/matter.min.js?v=7').then(() => { M = window.Matter; if (!M) unhide(); else if (want) start(); }).catch(unhide);
+    loadScript('/js/vendor/matter.min.js?v=8').then(() => { M = window.Matter; if (!M) unhide(); else if (want) start(); }).catch(unhide);
   }, { rootMargin: '700px 0px' });
   pre.observe(jarEl);
   const go = new IntersectionObserver(([e]) => {

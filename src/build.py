@@ -11,7 +11,7 @@ from szotar import T, MAPS, FB, IG, ASK
 
 ROOT = Path(__file__).resolve().parent.parent / 'site'
 SITE = 'https://habvero-sopron.netlify.app'   # [?] éles domain a tulajdonostól
-V = 7
+V = 8
 NOINDEX = True                                # demó: noindex; élesítéskor False + netlify.toml X-Robots-Tag törlése
 LANGS = ['hu', 'de', 'en']
 
@@ -283,8 +283,10 @@ def home(t):
     days = ''.join(days)
 
     mark = ''.join(f'<span class="ch" style="--i:{i}">{c}</span>' for i, c in enumerate('HabVero'))
-    brands = ['Callebaut', 'Decora', 'Silikomart', 'Fractal Colors', 'Cake Masters']
-    bset = ''.join(f'<li>{b}</li><li class="tp__dot" aria-hidden="true">✿</li>' for b in brands)
+    # szalagok: a boltban kapható termékek magyarul / a nyelv szerint (kopi: a márkanevek nem érthetők)
+    prods = t['pills']
+    bset = ''.join(f'<li>{e(b)}</li><li class="tp__dot">✿</li>' for b in prods[:6] + prods[9:])
+    bset2 = ''.join(f'<li>{e(b)}</li><li class="tp__dot">✿</li>' for b in prods[6:9] + prods[:3])
     pills = ''.join(f'<li class="pill pill--{k % 5}" data-pill>{e(p)}</li>' for k, p in enumerate(t['pills']))
     fields = ''.join(f'<li class="lc__f" style="--i:{k}"><i class="lc__st" aria-hidden="true"></i></li>' for k in range(10))
     drip = '<svg class="drip" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 0H1440V40C1410 40 1404 58 1396 78C1388 98 1366 98 1360 78C1352 52 1340 40 1300 40C1240 40 1236 96 1210 104C1184 112 1174 70 1168 52C1160 40 1140 40 1100 40C1050 40 1046 62 1040 70C1032 82 1014 82 1008 66C1000 46 990 40 930 40C880 40 872 76 866 100C858 128 830 128 824 100C818 68 806 40 760 40C700 40 694 58 688 66C680 78 664 78 658 62C650 44 640 40 590 40C540 40 532 84 526 108C518 136 488 136 482 106C476 74 466 40 420 40C370 40 364 56 358 64C350 74 334 72 330 58C324 42 310 40 260 40C214 40 206 70 200 86C192 108 168 108 162 84C156 60 146 40 100 40C60 40 54 52 48 60C40 70 26 70 22 56C18 44 10 40 0 40Z"/></svg>'
@@ -320,9 +322,9 @@ def home(t):
     </div>
   </section>
 
-  <section class="tp" aria-label="{e(t['brands_label'])}" data-tapes>
-    <div class="tp__band tp__band--a"><div class="tp__track" data-tape="1"><ul class="tp__set" role="list">{bset}</ul><ul class="tp__set" role="list" aria-hidden="true">{bset}</ul></div></div>
-    <div class="tp__band tp__band--b" aria-hidden="true"><div class="tp__track" data-tape="-1"><ul class="tp__set" role="list">{bset}</ul><ul class="tp__set" role="list">{bset}</ul></div></div>
+  <section class="tp" aria-hidden="true" data-tapes>
+    <div class="tp__band tp__band--a"><div class="tp__track" data-tape="1"><ul class="tp__set">{bset}</ul><ul class="tp__set">{bset}</ul></div></div>
+    <div class="tp__band tp__band--b"><div class="tp__track" data-tape="-1"><ul class="tp__set">{bset2}</ul><ul class="tp__set">{bset2}</ul></div></div>
   </section>
 
   <section id="bolt" class="sec polc" data-section="bolt" aria-labelledby="h-polc">
