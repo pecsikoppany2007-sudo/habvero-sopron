@@ -1,7 +1,6 @@
 // HabVero: alap működés (12 fejlesztő). Mozgás nincs itt: az a js/motion.js-ben (13 animátor).
 // Gyökér-jelzők a <html>-en (a <head> inline scriptje teszi): rich | touch | still, is-gpu-soft,
 // intro-on / intro-started / no-intro, is-menu-open. Komponens-osztály sosem egyezik ezekkel.
-import { initLines, relayout, setNozzle, lineState } from './line.js?v=4';
 
 const root = document.documentElement;
 const $ = (s, c = document) => c.querySelector(s);
@@ -9,7 +8,7 @@ const $$ = (s, c = document) => [...c.querySelectorAll(s)];
 let i18n = {};
 try { i18n = JSON.parse(($('#i18n') || {}).textContent || '{}'); } catch (e) { /* üres szótár */ }
 
-const HV = (window.HV = { root, lines: lineState, relayout, setNozzle, hero: null, i18n });
+const HV = (window.HV = { root, i18n });
 
 /* ---------- Budapest idő (EU nyári időszámítás szabállyal; az Intl timeZone lassú telefonon) ---------- */
 function lastSundayUTC(y, m) { const d = new Date(Date.UTC(y, m + 1, 0, 1)); d.setUTCDate(d.getUTCDate() - d.getUTCDay()); return d; }
@@ -79,49 +78,24 @@ function initHeader() {
   upd();
 }
 
-/* ---------- 3D hero (14 3D specialista: js/hero3d.js) ---------- */
-function initHero() {
-  const canvas = $('#hero3d');
-  if (!canvas) return;
-  const stage = canvas.closest('[data-hero-stage]');
-  if (root.classList.contains('still')) { canvas.remove(); return; }
-  const live = () => { stage && stage.classList.add('is-live'); document.dispatchEvent(new CustomEvent('hv:hero-live')); };
-  if (canvas.hasAttribute('data-ready')) live();
-  new MutationObserver((m, o) => { if (canvas.hasAttribute('data-ready')) { live(); o.disconnect(); } })
-    .observe(canvas, { attributes: true, attributeFilter: ['data-ready'] });
-  canvas.addEventListener('hero3d:ready', live, { once: true });
-
-  const start = async () => {
-    try {
-      const m = await import('./hero3d.js?v=4');
-      if (typeof m.mountHero !== 'function') throw new Error('mountHero hiányzik');
-      HV.hero = await m.mountHero(canvas, {
-        onNozzle: (x, y) => setNozzle(x, y, canvas),
-        // 13 animátor: a szómárka és a #line-nozzle visszahúzása ezekre szinkronizál
-        onExit: (p) => { HV.heroExit = p; document.dispatchEvent(new CustomEvent('hv:hero-exit', { detail: p })); },
-        onIntroDone: () => document.dispatchEvent(new CustomEvent('hv:hero-intro-done')),
-      });
-      if (!HV.hero) { root.classList.add('is-hero-fallback'); canvas.hidden = true; return; }   // kapu: poszter marad
-      document.dispatchEvent(new CustomEvent('hv:hero-mounted', { detail: HV.hero }));
-    } catch (err) {
-      // tartalék: a poszter marad, a vonal a poszter csőréből indul
-      root.classList.add('is-hero-fallback');
-      canvas.hidden = true;
-      console.warn('[hero3d] poszter marad:', err && err.message);
-    }
+/* ---------- élő óra a jobb szélen (Budapest idő, másodpercenként, csak ha látszik) ---------- */
+function initClock() {
+  const el = $('[data-clock]'); if (!el || !matchMedia('(min-width: 1100px)').matches) return;
+  const p = (n) => String(n).padStart(2, '0');
+  const run = () => {
+    const { min, sec } = budapestNow();
+    el.textContent = `${p(Math.floor(min / 60))}:${p(min % 60)}:${p(sec)}`;
+    initClock.t = setTimeout(run, 1000 - (Date.now() % 1000) + 5);
   };
-  const poster = $('.hero__poster');
-  const go = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 200));
-  if (poster && poster.decode) poster.decode().then(go, go); else go();
+  run();
 }
 
 /* ---------- indulás ---------- */
 initMenu();
 initHeader();
 tickOpen();
-initLines();
-initHero();
+initClock();
 document.addEventListener('visibilitychange', () => { if (!document.hidden) tickOpen(); });
 
 // 13 animátor: a motion.js `initMotion(HV)`-t exportál; ha még üres, semmi nem történik.
-import('./motion.js?v=4').then((m) => m.initMotion && m.initMotion(HV)).catch((err) => console.warn('[motion]', err && err.message));
+import('./motion.js?v=5').then((m) => m.initMotion && m.initMotion(HV)).catch((err) => console.warn('[motion]', err && err.message));

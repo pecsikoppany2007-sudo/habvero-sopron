@@ -268,3 +268,36 @@ T = {
     store_desc='Baking and cake-decorating supplies and ingredients for home bakers and professionals in Sopron, Hungary.',
 ),
 }
+
+# v2 (2026-11-02): új szakaszok szövegei
+V2 = {
+    'hu': dict(
+        stmt='A Torna utca 2. alatti boltban sütőformák, kiszúrók, csokoládé, ételfesték, tortadobozok és tortadíszek várnak, hobbi sütőknek és cukrászoknak.',
+        brands_label='Márkák a polcokon',
+        ring_words=['Torták', 'sütik'],
+        hz_count='kategória',
+        edge_place='Sopron, Torna utca 2.',
+        idx=['Nyitókép', 'A bolt', 'Termékek', 'Torták és sütik', 'Kártya', 'Cím'],
+        loading='Betöltés',
+    ),
+    'de': dict(
+        stmt='Im Laden in der Torna utca 2 findest du Backformen, Ausstecher, Schokolade, Lebensmittelfarbe, Tortenschachteln und Tortendeko, für Hobbybäcker und Konditoren.',
+        brands_label='Marken im Regal',
+        ring_words=['Torten', 'Gebäck'],
+        hz_count='Kategorie',
+        edge_place='Sopron, Torna utca 2',
+        idx=['Start', 'Der Laden', 'Sortiment', 'Torten und Gebäck', 'Karte', 'Adresse'],
+        loading='Lädt',
+    ),
+    'en': dict(
+        stmt='At Torna utca 2 the shelves hold baking moulds, cutters, chocolate, food colouring, cake boxes and cake toppers, for home bakers and pastry chefs.',
+        brands_label='Brands on our shelves',
+        ring_words=['Cakes', 'bakes'],
+        hz_count='category',
+        edge_place='Sopron, Torna utca 2',
+        idx=['Top', 'The shop', 'Products', 'Cakes and bakes', 'Card', 'Address'],
+        loading='Loading',
+    ),
+}
+for _l in T:
+    T[_l].update(V2[_l])

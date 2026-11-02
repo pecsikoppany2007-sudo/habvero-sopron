@@ -11,7 +11,7 @@ from szotar import T, MAPS, FB, IG, ASK
 
 ROOT = Path(__file__).resolve().parent.parent / 'site'
 SITE = 'https://habvero-sopron.netlify.app'   # [?] éles domain a tulajdonostól
-V = 4
+V = 5
 NOINDEX = True                                # demó: noindex; élesítéskor False + netlify.toml X-Robots-Tag törlése
 LANGS = ['hu', 'de', 'en']
 
@@ -168,9 +168,9 @@ def header(t, page, on_home):
         <li><a href="{pre}#latogatas" data-menu-link>{tx(t, t['m3'])}</a></li>
       </ul>
       <ul class="lang" role="list" aria-label="{e(t['lang_label'])}">{''.join(langs)}</ul>
-      <p class="open open--menu" data-open hidden>{ros_svg(6, 'open__ros')}<span data-open-text></span></p>
+      <p class="open open--menu" data-open hidden><i class="open__sq" aria-hidden="true"></i><span data-open-text></span></p>
     </nav>
-    <p class="open open--hd" data-open hidden>{ros_svg(6, 'open__ros')}<span data-open-text></span></p>
+    <p class="open open--hd" data-open hidden><i class="open__sq" aria-hidden="true"></i><span data-open-text></span></p>
     {btn(MAPS, e(t['route']), 'primary', t['route_aria'], True, True, ' data-hd-cta')}
     <button class="hd__toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle><span data-menu-l="open">{e(t['menu_open'])}</span><span data-menu-l="close" hidden>{e(t['menu_close'])}</span></button>
   </div>
@@ -183,7 +183,6 @@ def footer(t, page):
         for l, n in (('hu', 'Magyar'), ('de', 'Deutsch'), ('en', 'English')))
     hours = '<br>'.join(tx(t, h) for h in t['ft_hours'])
     return f"""<footer class="ft" data-curtain>
-  <svg class="pl pl--ft" data-line="footer" aria-hidden="true" focusable="false"><path data-seg="foot"/></svg>
   <div class="ft__in wrap">
     <div class="ft__cols">
       <div class="ft__col ft__col--brand">
@@ -208,7 +207,7 @@ def footer(t, page):
       <ul class="lang lang--full" role="list" aria-label="{e(t['lang_label'])}">{langs}</ul>
     </div>
   </div>
-  <p class="ft__mark" aria-hidden="true">HabVero</p>
+  <p class="ft__mark" aria-hidden="true">{"".join(f'<span style="--i:{i}">{c}</span>' for i, c in enumerate("HabVero"))}</p>
 </footer>"""
 
 
@@ -242,133 +241,145 @@ def store_ld(t):
 def home(t):
     L = t['lang']
     fbbtn = btn(FB, tx(t, t['cta2']), 'secondary', t['cta2_aria'], True)
-    ask = f'<div class="cta__ask">{fbbtn}</div>'
 
-    # Kínálat index-sorok: sorcím + mondat, fő kép (mélység-kártya) + 3 kisebb (kinalat-N-a/b/c)
-    rows = []
+    # Kínálat: vízszintes galéria (asztali), telefonon egymás alatt
+    panels = []
     for i, name in enumerate(t['rows'], 1):
         slot = ['', 'kinalat-1-kellekek', 'kinalat-2-alapanyagok', 'kinalat-3-dekoracio'][i]
         alts = t['row_alts'][i - 1]
-        main_ = dc(img(slot, [400, 640, 960], 960, 1200, alts[0], '(min-width: 1100px) 22vw, (min-width: 700px) 32vw, 92vw'), '4x5')
-        ths = ''.join(f'<figure class="idx__th"><div class="slot slot--4x5">'
-                      f'{img(f"kinalat-{i}-{x}", [400, 640], 640, 800, alts[j + 1], "(min-width: 1100px) 13vw, (min-width: 700px) 19vw, 30vw")}'
-                      f'</div></figure>' for j, x in enumerate('abc'))
-        src = asset(f'/img/{slot}-640.webp')
-        rows.append(f"""        <li class="idx__row" data-row="{i}" data-reveal-row data-reveal-src="{src}">
-          <div class="idx__txt"><h3 class="idx__name">{tx(t, name)}</h3><p>{tx(t, t['row_txt'][i - 1])}</p></div>
-          <div class="idx__set"><div class="idx__main idx__media">{main_}</div>{ths}</div>
-        </li>""")
-    rows = '\n'.join(rows)
+        main_ = img(slot, [400, 640, 960], 960, 1200, alts[0], '(min-width: 1100px) 30vw, 92vw')
+        ths = ''.join(f'<figure class="hz__th" data-tile-in>{img(f"kinalat-{i}-{x}", [400, 640], 640, 800, alts[j + 1], "(min-width: 1100px) 11vw, 30vw")}</figure>'
+                      for j, x in enumerate('abc'))
+        panels.append(f"""        <article class="hz__panel" data-hz-panel>
+          <div class="hz__txt">
+            <p class="hz__num" aria-hidden="true">0{i}<span>/03</span></p>
+            <h3 class="hz__name" data-anim="lines">{tx(t, name)}</h3>
+            <p>{tx(t, t['row_txt'][i - 1])}</p>
+          </div>
+          <figure class="hz__main" data-tile-in><div class="hz__par" data-par>{main_}</div></figure>
+          <div class="hz__ths">{ths}</div>
+        </article>""")
+    panels = '\n'.join(panels)
 
-    # Torták és sütik: 5 kép + záró kártya (tortaforgó váz)
-    alk = [('alkotas-1', 'sq', 680), ('alkotas-2', 'pt', 852), ('alkotas-3', 'sq', 680), ('alkotas-4', 'pt', 852), ('alkotas-5', 'sq', 680)]
+    # Torták és sütik: 5 kép + záró kártya a 3D gyűrűn
+    alk = [('alkotas-1', 680), ('alkotas-2', 852), ('alkotas-3', 680), ('alkotas-4', 852), ('alkotas-5', 680)]
     cards = []
-    for i, (slot, kind, h) in enumerate(alk):
-        ratio = '1x1' if kind == 'sq' else '4x5'
-        cards.append(f'          <li class="tf__card tf__card--{kind}" data-i="{i}">'
-                     + dc(img(slot, [400, 680], 680, h, t['alk_alts'][i], '(min-width: 1100px) 22vw, (min-width: 700px) 34vw, 64vw'), ratio)
-                     + '</li>')
-    cards.append(f"""          <li class="tf__card tf__card--cta" data-i="5">
-            <div class="tf__cta slot slot--4x5">
-              <p>{tx(t, t['alk_p2'])}</p>
-              <p class="tf__links"><a class="tl" href="{IG}" target="_blank" rel="noopener" aria-label="{e(t['ig_aria'])}">{e(t['ig_link'])}</a><a class="tl" href="{FB}" target="_blank" rel="noopener" aria-label="{e(t['fb_aria'])}">{e(t['fb_link'])}</a></p>
-            </div>
-          </li>""")
+    for i, (slot, h) in enumerate(alk):
+        cards.append(f'          <li class="rg__card" style="--i:{i}"><div class="rg__face">'
+                     + img(slot, [400, 680], 680, h, t['alk_alts'][i], '(min-width: 1100px) 20vw, 52vw')
+                     + '</div></li>')
+    cards.append(f"""          <li class="rg__card rg__card--cta" style="--i:5"><div class="rg__face">
+            <p>{tx(t, t['alk_p2'])}</p>
+            <p class="rg__links"><a class="tl" href="{IG}" target="_blank" rel="noopener" aria-label="{e(t['ig_aria'])}">{e(t['ig_link'])}</a><a class="tl" href="{FB}" target="_blank" rel="noopener" aria-label="{e(t['fb_aria'])}">{e(t['fb_link'])}</a></p>
+          </div></li>""")
     cards = '\n'.join(cards)
 
     days = []
     for i, (d, h) in enumerate(t['days']):
         dow = (i + 1) % 7  # JS getDay(): 0 = vasárnap
-        days.append(f'<tr data-day="{dow}"><th scope="row">{ros_svg(6, "hours__ros")}{e(d)}<span class="hours__today" hidden>{e(t["today"])}</span></th><td>{e(h)}</td></tr>')
+        days.append(f'<tr data-day="{dow}"><th scope="row"><i class="hours__sq" aria-hidden="true"></i>{e(d)}<span class="hours__today" hidden>{e(t["today"])}</span></th><td>{e(h)}</td></tr>')
     days = ''.join(days)
 
     mark = ''.join(f'<span class="mk__l" style="--i:{i}">{c}</span>' for i, c in enumerate('HabVero'))
+    brands = ['Callebaut', 'Decora', 'Silikomart', 'Fractal Colors', 'Cake Masters']
+    bset = ''.join(f'<li>{b}</li><li class="mq__sq" aria-hidden="true"></li>' for b in brands)
+    secs = ['top', 'bolt', 'kinalat', 'alkotasok', 'kartya', 'latogatas']
+    sx = ''.join(f'<li><a href="#{s}" tabindex="-1" data-sx="{s}"><i></i><span>{e(n)}</span></a></li>' for s, n in zip(secs, t['idx']))
+    ring_h = ''.join(f'<span class="rg__w rg__w--{k + 1}" aria-hidden="true">{e(w)}</span>' for k, w in enumerate(t['ring_words']))
 
     body = f"""
 <body class="pg pg--home">
 {header(t, 'home', True)}
-<main id="main" class="main" data-flow-root>
+<nav class="sx" aria-hidden="true"><ol role="list">{sx}</ol></nav>
+<p class="edge" aria-hidden="true"><span>{e(t['edge_place'])}</span><span class="edge__sq"></span><span data-clock>--:--:--</span><span class="edge__sq"></span><span data-open><span data-open-text></span></span></p>
+<main id="main" class="main">
 
-  <section id="top" class="hero" data-section="hero" aria-labelledby="h-top">
+  <section id="top" class="hero" data-section="top" aria-labelledby="h-top">
     <div class="hero__stage" data-hero-stage>
       <figure class="hero__photo" data-hero-photo>
-        <div class="slot" data-fill><picture>
-          <source media="(min-width: 1100px) and (min-aspect-ratio: 2/1)" srcset="{asset('/img/hero-bolt-wide-1400.webp')} 1400w, {asset('/img/hero-bolt-wide-2048.webp')} 2048w" sizes="46vw">
-          <source media="(min-width: 1100px)" srcset="{asset('/img/hero-bolt-wide-phone-640.webp')} 640w, {asset('/img/hero-bolt-wide-phone-960.webp')} 960w, {asset('/img/hero-bolt-wide-phone-1229.webp')} 1229w" sizes="46vw">
-          <source media="(min-width: 700px)" srcset="{asset('/img/hero-bolt-wide-800.webp')} 800w, {asset('/img/hero-bolt-wide-1400.webp')} 1400w, {asset('/img/hero-bolt-wide-2048.webp')} 2048w" sizes="92vw">
-          <img src="{asset('/img/hero-bolt-wide-phone-640.webp')}" srcset="{asset('/img/hero-bolt-wide-phone-640.webp')} 640w, {asset('/img/hero-bolt-wide-phone-960.webp')} 960w, {asset('/img/hero-bolt-wide-phone-1229.webp')} 1229w" sizes="92vw" width="1229" height="1536" alt="{e(t['hero_alt'])}" decoding="async" fetchpriority="high">
-        </picture></div>
+        <picture>
+          <source media="(orientation: portrait) and (max-width: 1099px)" srcset="{asset('/img/hero-bolt-tall-640.webp')} 640w, {asset('/img/hero-bolt-tall-864.webp')} 864w" sizes="100vw">
+          <img src="{asset('/img/hero-bolt-wide-1400.webp')}" srcset="{asset('/img/hero-bolt-wide-800.webp')} 800w, {asset('/img/hero-bolt-wide-1400.webp')} 1400w, {asset('/img/hero-bolt-wide-2048.webp')} 2048w" sizes="100vw" width="2048" height="1152" alt="{e(t['hero_alt'])}" decoding="async" fetchpriority="high" data-hero-img>
+        </picture>
       </figure>
-      <div class="hero__vis">
-        <p class="hero__mark" aria-hidden="true"><span class="mk" data-anim="mark">{mark}</span></p>
-        <div class="hero__obj" data-hero-obj>
-          <img class="hero__poster" src="{asset('/img/hero-poster.webp')}" srcset="{asset('/img/hero-poster-900.webp')} 900w, {asset('/img/hero-poster.webp')} 1600w" sizes="(min-width: 1100px) 60vh, 84vw" alt="" width="1600" height="1600" decoding="async" data-nozzle="0.383,0.712">
-        </div>
-        <canvas id="hero3d" class="hero__canvas" aria-hidden="true" data-hero-canvas></canvas>
-      </div>
+      <div class="mz" aria-hidden="true" data-mosaic></div>
+      <div class="hero__shade" aria-hidden="true"></div>
     </div>
-    <div class="hero__body wrap">
-      <div class="hero__copy">
+    <div class="hero__body">
+      <div class="hero__row wrap">
         <h1 id="h-top" class="hero__h1" data-anim="lines">{tx(t, t['h1'])}</h1>
-        <p class="hero__lede" data-anim="lines">{tx(t, t['lede'])}</p>
-        <p class="hero__addr" data-anim="fade">{tx(t, t['addr_line'])}</p>
-        <p class="hero__hours" data-anim="fade"><span class="open open--hero" data-open hidden>{ros_svg(6, 'open__ros')}<span data-open-text></span></span><span class="hero__hrs">{tx(t, t['hours_short'])}</span></p>
-        <div class="cta" data-anim="fade">
-          {btn(MAPS, tx(t, t['cta1']), 'primary', t['cta1'] + ' (' + t['newtab'] + ')', True)}
-          {ask}
+        <div class="hero__info">
+          <p class="hero__lede" data-anim="fade">{tx(t, t['lede'])}</p>
+          <p class="hero__addr" data-anim="fade">{tx(t, t['addr_line'])}<br><span class="open open--hero" data-open hidden><i class="open__sq" aria-hidden="true"></i><span data-open-text></span></span></p>
+          <p class="sr">{tx(t, t['hours_short'])}</p>
+          <div class="cta" data-anim="fade">
+            {btn(MAPS, tx(t, t['cta1']), 'primary', t['cta1'] + ' (' + t['newtab'] + ')', True)}
+            <div class="cta__ask">{fbbtn}</div>
+          </div>
         </div>
       </div>
+      <p class="hero__mark" aria-hidden="true"><span class="mk">{mark}</span></p>
     </div>
-    <svg class="pl" data-line="hero" aria-hidden="true" focusable="false"><path data-seg="nozzle"/><path data-seg="frame"/><path data-seg="drop"/></svg>
+    <p class="hero__count" aria-hidden="true"><span data-count>000</span><span class="hero__count-l">{e(t['loading'])}</span></p>
   </section>
 
-  <section id="kinalat" class="sec sec--kinalat" data-section="kinalat" data-flow aria-labelledby="h-kinalat">
+  <section class="mq" aria-label="{e(t['brands_label'])}" data-marquee>
+    <div class="mq__track" data-mq-track><ul class="mq__set" role="list">{bset}</ul><ul class="mq__set" role="list" aria-hidden="true">{bset}</ul></div>
+  </section>
+
+  <section id="bolt" class="sec st" data-section="bolt" data-flow aria-label="{e(t['idx'][1])}">
     <div class="flow-dim" aria-hidden="true"></div>
-    <svg class="pl" data-line="kinalat" aria-hidden="true" focusable="false"><path data-seg="seam"/><path data-seg="row" data-row="1"/><path data-seg="row" data-row="2"/><path data-seg="row" data-row="3"/></svg>
-    <div class="wrap">
-      <h2 id="h-kinalat" class="h2" data-anim="lines">{tx(t, t['h2_kinalat'])}</h2>
-      <ol class="idx" role="list" data-reveal-list>
-{rows}
-      </ol>
-      <div class="kin__foot">
-        <div class="kin__txt"><p>{tx(t, t['kin_p2'])}</p></div>
-        <div class="cta">{ask}</div>
-      </div>
+    <div class="wrap st__in">
+      <p class="st__p" data-words>{tx(t, t['stmt'])}</p>
+      <figure class="st__pic st__pic--a" data-par-y="-0.12">{img('kinalat-1-b', [400, 640], 640, 800, t['row_alts'][0][2], '(min-width: 1100px) 16vw, 40vw')}</figure>
+      <figure class="st__pic st__pic--b" data-par-y="0.1">{img('kinalat-2-a', [400, 640], 640, 800, t['row_alts'][1][1], '(min-width: 1100px) 13vw, 34vw')}</figure>
     </div>
   </section>
 
-  <section id="alkotasok" class="sec sec--alkotasok" data-section="alkotasok" data-turntable aria-labelledby="h-alkotasok">
-    <svg class="pl" data-line="alkotasok" aria-hidden="true" focusable="false"><path data-seg="seam"/><path data-seg="strip"/><path data-seg="rim" class="pl__rim"/></svg>
-    <div class="tf__pin" data-turntable-stage>
-      <div class="wrap tf__head">
-        <h2 id="h-alkotasok" class="h2" data-anim="lines">{tx(t, t['h2_alkotasok'])}</h2>
-        <div class="tf__intro"><p>{tx(t, t['alk_p1'])}</p></div>
+  <section id="kinalat" class="sec hz" data-section="kinalat" data-hz aria-labelledby="h-kinalat">
+    <div class="hz__pin" data-hz-pin>
+      <div class="hz__track" data-hz-track>
+        <header class="hz__head">
+          <h2 id="h-kinalat" class="h2 hz__h2" data-anim="lines">{tx(t, t['h2_kinalat'])}</h2>
+          <p>{tx(t, t['kin_p2'])}</p>
+          <div class="cta">{fbbtn}</div>
+        </header>
+{panels}
       </div>
-      <div class="tf__view" data-turntable-view>
-        <ul class="tf__ring" role="list" data-turntable-ring>
+      <div class="hz__bar" aria-hidden="true"><i data-hz-bar></i></div>
+    </div>
+  </section>
+
+  <section id="alkotasok" class="sec rg" data-section="alkotasok" data-ring aria-labelledby="h-alkotasok">
+    <div class="rg__pin" data-ring-pin>
+      <h2 id="h-alkotasok" class="rg__h"><span class="sr">{e(t['h2_alkotasok'])}</span>{ring_h}</h2>
+      <div class="rg__view" data-ring-view>
+        <ul class="rg__ring" role="list" data-ring-el>
 {cards}
         </ul>
       </div>
+      <p class="rg__intro wrap">{tx(t, t['alk_p1'])}</p>
     </div>
   </section>
 
-  <section id="kartya" class="sec sec--kartya" data-section="kartya" data-wipe aria-labelledby="h-kartya">
-    <svg class="pl" data-line="kartya" aria-hidden="true" focusable="false"><path data-seg="seam"/></svg>
-    <div class="wrap band">
-      <div class="band__txt">
-        <h2 id="h-kartya" class="h3" data-anim="lines">{tx(t, t['h2_kartya'])}</h2>
-        <p>{tx(t, t['kar_p1'])}</p>
-        <p>{tx(t, t['kar_p2'])}</p>
-        <p><a class="tl" href="{IG}" target="_blank" rel="noopener" aria-label="{e(t['ig_aria'])}">{e(t['ig_link'])}</a></p>
+  <section id="kartya" class="sec kt" data-section="kartya" aria-labelledby="h-kartya">
+    <div class="kt__band" data-kt>
+      <div class="kt__tiles" aria-hidden="true" data-kt-tiles></div>
+      <div class="wrap kt__in">
+        <div class="kt__txt">
+          <h2 id="h-kartya" class="h2" data-anim="lines">{tx(t, t['h2_kartya'])}</h2>
+          <p>{tx(t, t['kar_p1'])}</p>
+          <p>{tx(t, t['kar_p2'])}</p>
+          <p><a class="tl" href="{IG}" target="_blank" rel="noopener" aria-label="{e(t['ig_aria'])}">{e(t['ig_link'])}</a></p>
+        </div>
+        <figure class="kt__img" data-tilt><div class="kt__card">{img('kartya-polc', [560, 840], 840, 560, t['kar_alt'], '(min-width: 1100px) 40vw, 92vw')}</div></figure>
       </div>
-      <div class="band__img">{dc(img('kartya-polc', [560, 840], 840, 560, t['kar_alt'], '(min-width: 1100px) 36vw, (min-width: 700px) 44vw, 92vw'), '3x2')}</div>
     </div>
   </section>
 
-  <section id="latogatas" class="sec sec--latogatas" data-section="latogatas" data-flow aria-labelledby="h-latogatas">
+  <section id="latogatas" class="sec visit" data-section="latogatas" data-flow aria-labelledby="h-latogatas">
     <div class="flow-dim" aria-hidden="true"></div>
-    <svg class="pl" data-line="latogatas" aria-hidden="true" focusable="false"><path data-seg="seam"/><path data-seg="map"/></svg>
-    <div class="wrap visit">
+    <div class="wrap visit__in">
       <div class="visit__txt">
         <h2 id="h-latogatas" class="h2" data-anim="lines">{tx(t, t['h2_latogatas'])}</h2>
         <address class="nap"><span class="nap__name">{e(t['nap_name'])}</span><br>{tx(t, t['nap_addr'])}</address>
@@ -377,12 +388,12 @@ def home(t):
           <thead class="sr"><tr><th scope="col">{e(t['day_col'])}</th><th scope="col">{e(t['open_col'])}</th></tr></thead>
           <tbody>{days}</tbody>
         </table>
-        <div class="cta cta--visit">
+        <div class="cta">
           {btn(MAPS, tx(t, t['maps_open']), 'primary', t['maps_open'] + ' (' + t['newtab'] + ')', True)}
-          {ask}
+          <div class="cta__ask">{fbbtn}</div>
         </div>
       </div>
-      <figure class="visit__img" data-visit-photo>{dc(img('latogatas-bolt', [800, 1400, 2048], 2048, 1152, t['visit_alt'], '(min-width: 1100px) 44vw, 92vw'), '16x9')}</figure>
+      <figure class="visit__img" data-pix>{img('latogatas-bolt', [800, 1400, 2048], 2048, 1152, t['visit_alt'], '(min-width: 1100px) 50vw, 92vw')}<canvas class="visit__cv" aria-hidden="true"></canvas></figure>
     </div>
   </section>
 
@@ -392,11 +403,13 @@ def home(t):
 </body>
 </html>
 """
-    pre = (f'\n<link rel="preload" as="image" href="{asset("/img/hero-bolt-wide-phone-640.webp")}" imagesrcset="{asset("/img/hero-bolt-wide-phone-640.webp")} 640w, {asset("/img/hero-bolt-wide-phone-960.webp")} 960w" '
-           f'imagesizes="92vw" media="(max-width: 699px)" fetchpriority="high">'
-           f'\n<link rel="preload" as="image" href="{asset("/img/hero-poster.webp")}" imagesrcset="{asset("/img/hero-poster-900.webp")} 900w, {asset("/img/hero-poster.webp")} 1600w" '
-           f'imagesizes="(min-width: 1100px) 60vh, 84vw">')
+    pre = (f'\n<link rel="preload" as="image" href="{asset("/img/hero-bolt-tall-640.webp")}" imagesrcset="{asset("/img/hero-bolt-tall-640.webp")} 640w, {asset("/img/hero-bolt-tall-864.webp")} 864w" '
+           f'imagesizes="100vw" media="(orientation: portrait) and (max-width: 1099px)" fetchpriority="high">'
+           f'\n<link rel="preload" as="image" href="{asset("/img/mozaik-200.webp")}" media="(min-width: 700px)">'
+           f'\n<link rel="preload" as="image" href="{asset("/img/mozaik-120.webp")}" media="(max-width: 699px)">'
+           f'\n<link rel="stylesheet" href="{asset("/css/home.css")}">')
     return head(t, t['title'], t['desc'], 'home', t['home'], store_ld(t), pre) + body
+
 
 
 # ---------------------------------------------------------------- jogi oldalak, 404

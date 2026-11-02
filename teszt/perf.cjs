@@ -66,6 +66,7 @@ function frameStats(events, t0, t1) {
       };
     });
     if (process.env.PERF_CSS) await p.addInitScript(css => document.addEventListener('DOMContentLoaded', () => { const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st); }), process.env.PERF_CSS);
+    if (process.env.PERF_JS) await p.addInitScript(process.env.PERF_JS);
     const cdp = await ctx.newCDPSession(p);
     await cdp.send('Emulation.setCPUThrottlingRate', { rate });
     await cdp.send('Performance.enable');
