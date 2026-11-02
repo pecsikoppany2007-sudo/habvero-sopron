@@ -1,44 +1,45 @@
 /* HabVero Cukrász Kellékek: design tokens v1 (08 dizájner, 2026-10-30)
    Forrás: dizajn.md. Minden szín, betű, méret, térköz, mozgás itt van; a kódban ne legyen nyers érték.
-   Betűk: @fontsource/noto-serif-display 5.3.0 (200, 300) + @fontsource/hanken-grotesk 5.3.0 (400, 500), OFL-1.1.
+   Betűk: Cherry Bomb One 400 (display) + Fredoka 400/500/600 (szöveg), @fontsource, OFL-1.1 (v3, 2026-11-02).
    A fájlokat a builder másolja: site/fonts/ (a latin-ext fájlokat pyftsubset-tel U+0100-017F-re szűkítve). */
 
 /* ---------- Betűk (self-host, latin + latin-ext) ---------- */
-@font-face{font-family:"Noto Serif Display";font-style:normal;font-weight:200;font-display:swap;
-  src:url("../fonts/noto-serif-display-latin-200-normal.woff2") format("woff2");
+@font-face{font-family:"Cherry Bomb One";font-style:normal;font-weight:400;font-display:swap;
+  src:url("../fonts/cherry-bomb-one-latin-400-normal.woff2") format("woff2");
   unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-@font-face{font-family:"Noto Serif Display";font-style:normal;font-weight:200;font-display:swap;
-  src:url("../fonts/noto-serif-display-latin-ext-200-normal.woff2") format("woff2");
+@font-face{font-family:"Cherry Bomb One";font-style:normal;font-weight:400;font-display:swap;
+  src:url("../fonts/cherry-bomb-one-latin-ext-400-normal.woff2") format("woff2");
   unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-@font-face{font-family:"Noto Serif Display";font-style:normal;font-weight:300;font-display:swap;
-  src:url("../fonts/noto-serif-display-latin-300-normal.woff2") format("woff2");
+@font-face{font-family:"Fredoka";font-style:normal;font-weight:400;font-display:swap;
+  src:url("../fonts/fredoka-latin-400-normal.woff2") format("woff2");
   unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-@font-face{font-family:"Noto Serif Display";font-style:normal;font-weight:300;font-display:swap;
-  src:url("../fonts/noto-serif-display-latin-ext-300-normal.woff2") format("woff2");
+@font-face{font-family:"Fredoka";font-style:normal;font-weight:400;font-display:swap;
+  src:url("../fonts/fredoka-latin-ext-400-normal.woff2") format("woff2");
   unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:400;font-display:swap;
-  src:url("../fonts/hanken-grotesk-latin-400-normal.woff2") format("woff2");
+@font-face{font-family:"Fredoka";font-style:normal;font-weight:500;font-display:swap;
+  src:url("../fonts/fredoka-latin-500-normal.woff2") format("woff2");
   unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:400;font-display:swap;
-  src:url("../fonts/hanken-grotesk-latin-ext-400-normal.woff2") format("woff2");
+@font-face{font-family:"Fredoka";font-style:normal;font-weight:500;font-display:swap;
+  src:url("../fonts/fredoka-latin-ext-500-normal.woff2") format("woff2");
   unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
-@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:500;font-display:swap;
-  src:url("../fonts/hanken-grotesk-latin-500-normal.woff2") format("woff2");
+@font-face{font-family:"Fredoka";font-style:normal;font-weight:600;font-display:swap;
+  src:url("../fonts/fredoka-latin-600-normal.woff2") format("woff2");
   unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
-@font-face{font-family:"Hanken Grotesk";font-style:normal;font-weight:500;font-display:swap;
-  src:url("../fonts/hanken-grotesk-latin-ext-500-normal.woff2") format("woff2");
+@font-face{font-family:"Fredoka";font-style:normal;font-weight:600;font-display:swap;
+  src:url("../fonts/fredoka-latin-ext-600-normal.woff2") format("woff2");
   unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+
 
 :root{
   /* ---------- Szín: a logóból és a bolt saját posztjaiból mérve ----------
      logó kör krém #FEFBF8, logó külső bézs #EBE3DA, ecsetfolt #EEE2D6, logó felirat #4A4643, FB "2022" púder #E0AFAC */
-  --paper:      #FBF7F2;  /* alap háttér (logó kör krémje, egy árnyalattal melegebb) */
-  --shell:      #EFE6DC;  /* második felület: sávok, kártya-alátét, slot-üres állapot (logó ecsetfolt) */
-  --ink:        #3E3532;  /* szöveg, gomb (logó felirat, kakaó felé mélyítve); paper-en 11.2:1, shell-en 9.7:1 */
-  --ink-soft:   #6E615B;  /* másodlagos szöveg; paper-en 5.6:1, shell-en 4.8:1, pink-pale-en 4.55:1 (AA) */
-  --line:       #5A4640;  /* AZ egy díszítővonal: habzsák-vonal, hajszálkeretek, táblázatvonal; paper-en 8.3:1 */
-  --pink:       #E2B2AD;  /* EGY akcentus: csak felület (gomb-hover kitöltés, nyitva-rozetta, 3D habzsák). Pink szövegszínként tilos; pink felületen a szöveg ink (6.4:1) */
-  --pink-pale:  #F3DCD8;  /* púder felület (törzsvásárlói sáv), ink rajta 9.1:1 */
+  --paper:      #FFF6EE;  /* alap háttér (logó kör krémje, egy árnyalattal melegebb) */
+  --shell:      #FCE7EC;  /* második felület: sávok, kártya-alátét, slot-üres állapot (logó ecsetfolt) */
+  --ink:        #4A2A2A;  /* szöveg, gomb (logó felirat, kakaó felé mélyítve); paper-en 11.2:1, shell-en 9.7:1 */
+  --ink-soft:   #7A5754;  /* másodlagos szöveg; paper-en 5.6:1, shell-en 4.8:1, pink-pale-en 4.55:1 (AA) */
+  --line:       #4A2A2A;  /* AZ egy díszítővonal: habzsák-vonal, hajszálkeretek, táblázatvonal; paper-en 8.3:1 */
+  --pink:       #F7B7C8;  /* EGY akcentus: csak felület (gomb-hover kitöltés, nyitva-rozetta, 3D habzsák). Pink szövegszínként tilos; pink felületen a szöveg ink (6.4:1) */
+  --pink-pale:  #FCE1E8;  /* púder felület (törzsvásárlói sáv), ink rajta 9.1:1 */
   --veil:       rgba(251,247,242,.62); /* krém fátyol a hátrébb került rétegeken (NEM sötétítés) */
   --shadow:     rgba(62,53,50,.16);    /* egyetlen árnyékszín: mélység-kártya alá, 3D kontakt árnyék */
 
@@ -50,8 +51,8 @@
   --m-metal:    #D8C6AE;  /* csőr és gyűrű: pezsgőszínű szatén fém, az egyetlen fém */
 
   /* ---------- Betű ---------- */
-  --f-display: "Noto Serif Display", "Iowan Old Style", Georgia, serif;   /* 200: óriás szómárka, h1; 300: h2, h3 */
-  --f-text:    "Hanken Grotesk", "Segoe UI", system-ui, sans-serif;       /* 400 szöveg, 500 gomb/nav/táblázatfej */
+  --f-display: "Cherry Bomb One", "Arial Rounded MT Bold", system-ui, sans-serif;   /* 200: óriás szómárka, h1; 300: h2, h3 */
+  --f-text:    "Fredoka", "Arial Rounded MT Bold", system-ui, sans-serif;       /* 400 szöveg, 500 gomb/nav/táblázatfej */
 
   /* Típusskála (clamp, 360 → 1440 px) */
   --t-mark: clamp(5.25rem, 4rem + 13vw, 16rem);     /* "HabVero" óriás szómárka a 3D tárgy mögött, 200, aria-hidden */
@@ -83,7 +84,7 @@
   --hair: 1px;            /* minden vonal; nincs 2 px-es dísz */
   --frame-offset: 10px;   /* hajszálkeret eltolása a fotó körül */
   --mat-offset: 14px;     /* mélység-kártya papír-alátét eltolása */
-  --radius: 0;            /* szögletes minden: gomb, kártya, kép, mező */
+  --radius: 999px;            /* szögletes minden: gomb, kártya, kép, mező */
   --btn-h: 52px; --btn-h-sm: 40px; --btn-px: 28px;
   --focus: 2px solid var(--ink); --focus-offset: 3px;
   --nav-h: 64px;
@@ -108,3 +109,5 @@
 @media (prefers-reduced-motion: reduce){
   :root{ --d-reveal: 1ms; --d-ui: 1ms; --d-ui-fast: 1ms; }
 }
+
+:root{--pink-deep:#E0668A;--mint:#BFE8D6;--butter:#FFE59E;--lilac:#DCCBF5;--sky:#C4E2FF;--cocoa:#4A2A2A;--spring:cubic-bezier(.34,1.56,.64,1);--track-ui:.04em}

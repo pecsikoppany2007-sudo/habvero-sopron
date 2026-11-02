@@ -98,4 +98,4 @@ initClock();
 document.addEventListener('visibilitychange', () => { if (!document.hidden) tickOpen(); });
 
 // 13 animátor: a motion.js `initMotion(HV)`-t exportál; ha még üres, semmi nem történik.
-import('./motion.js?v=5').then((m) => m.initMotion && m.initMotion(HV)).catch((err) => console.warn('[motion]', err && err.message));
+import('./motion.js?v=6').then((m) => m.initMotion && m.initMotion(HV)).catch((err) => console.warn('[motion]', err && err.message));

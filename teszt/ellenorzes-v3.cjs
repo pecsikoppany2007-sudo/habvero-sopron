@@ -1,4 +1,4 @@
-// HabVero v2 ellenőrzés: szélességek (320–1920), menü-horgonyok, elementFromPoint a linkeken (3D módban is), középen újratöltés,
+// HabVero v3 ellenőrzés: szélességek (320–1920), menü-horgonyok, elementFromPoint a linkeken (3D módban is), középen újratöltés,
 // konzolhibák és 4xx, mindhárom nyelv. Használat: node teszt/ellenorzes-v2.cjs [alap-url]
 const { chromium } = require('playwright');
 const base = process.argv[2] || 'http://localhost:8811';
@@ -33,13 +33,14 @@ const FAKE = () => { for (const C of [WebGLRenderingContext, WebGL2RenderingCont
         }
         // láthatatlanul maradt elemek (a görgetés végére minden fedje fel magát)
         scrollTo(0, document.documentElement.scrollHeight); await new Promise((r) => setTimeout(r, 1500));
-        for (const el of document.querySelectorAll('main h2, main h3, main p, main img, .ln__i')) {
+        for (const el of document.querySelectorAll('main h2, main h3, main p, main img, .is-pre')) { if (el.classList.contains('is-pre')) { out.hidden.push('PRE ' + el.className); continue; }
           const cs = getComputedStyle(el); if (cs.opacity === '0' || /matrix\(1, 0, 0, 1, 0, [1-9]/.test(cs.transform) && el.classList.contains('ln__i')) out.hidden.push(el.tagName + '.' + el.className);
         }
+        const jr = document.querySelector('[data-jar]'); if (jr) { const J = jr.getBoundingClientRect(); out.pillsOut = [...jr.querySelectorAll('.pill')].filter((p) => { const r = p.getBoundingClientRect(); return r.left < J.left - 4 || r.right > J.right + 4 || r.bottom > J.bottom + 4 || r.top < J.top - 30; }).length; out.phys = jr.classList.contains('is-phys'); }
         return out;
       });
       const anchorsBad = r.anchors.filter((s) => { const v = +s.split(':')[1]; return v < 40 || v > h * 0.5; });
-      console.log(lang, w, r.cls.split(' ')[0], r.sw > r.w ? `SZÉLES ${r.sw}` : 'ok', 'horgony', anchorsBad.length ? anchorsBad.join(' ') : 'ok', 'fedett', r.covered.length ? r.covered.slice(0, 4).join(' | ') : 0, 'rejtett', r.hidden.length ? r.hidden.slice(0, 3).join(' ') : 0);
+      console.log(lang, w, r.cls.split(' ')[0], r.sw > r.w ? `SZÉLES ${r.sw}` : 'ok', 'horgony', anchorsBad.length ? anchorsBad.join(' ') : 'ok', 'fedett', r.covered.length ? r.covered.slice(0, 4).join(' | ') : 0, 'jar', r.phys, r.pillsOut, 'rejtett', r.hidden.length ? r.hidden.slice(0, 3).join(' ') : 0);
       // középen újratöltés
       if (w === 390 || w === 1440) {
         await p.evaluate(() => scrollTo(0, document.documentElement.scrollHeight * 0.45)); await p.reload(); await p.waitForTimeout(3000);

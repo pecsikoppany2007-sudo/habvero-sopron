@@ -301,3 +301,21 @@ V2 = {
 }
 for _l in T:
     T[_l].update(V2[_l])
+
+# v3 (2026-11-02): cuki változat
+V3 = {
+    'hu': dict(h2_polc='Mi van a polcokon?',
+               pills=['fánkformák', 'szilikonformák', 'kiszúrók', 'muffinpapírok', 'tortadobozok', 'csokoládé', 'gél ételfesték',
+                      'marcipánfigurák', 'szórt díszek', 'ehető szemek', 'tortadíszek', 'tortagyűrűk'],
+               card_fields='10 mező', today_short='ma'),
+    'de': dict(h2_polc='Was steht im Regal?',
+               pills=['Donutformen', 'Silikonformen', 'Ausstecher', 'Muffinförmchen', 'Tortenschachteln', 'Schokolade', 'Gel-Lebensmittelfarbe',
+                      'Marzipanfiguren', 'Streudeko', 'essbare Augen', 'Tortenaufleger', 'Tortenringe'],
+               card_fields='10 Felder', today_short='heute'),
+    'en': dict(h2_polc="What's on the shelves?",
+               pills=['doughnut moulds', 'silicone moulds', 'cutters', 'muffin cases', 'cake boxes', 'chocolate', 'gel food colouring',
+                      'marzipan figures', 'sprinkles', 'edible eyes', 'cake toppers', 'cake rings'],
+               card_fields='10 stamps', today_short='today'),
+}
+for _l in T:
+    T[_l].update(V3[_l])

@@ -11,7 +11,7 @@ from szotar import T, MAPS, FB, IG, ASK
 
 ROOT = Path(__file__).resolve().parent.parent / 'site'
 SITE = 'https://habvero-sopron.netlify.app'   # [?] éles domain a tulajdonostól
-V = 5
+V = 6
 NOINDEX = True                                # demó: noindex; élesítéskor False + netlify.toml X-Robots-Tag törlése
 LANGS = ['hu', 'de', 'en']
 
@@ -135,14 +135,12 @@ def head(t, title, desc, page, canonical, jsonld=None, extra=''):
 <meta property="og:image:alt" content="{e(t['og_alt'])}">
 <meta property="og:locale" content="{t['locale']}">{og_loc_alt}
 <meta name="twitter:card" content="summary_large_image">
-<meta name="theme-color" content="#FBF7F2">
+<meta name="theme-color" content="#FFF6EE">
 <meta name="format-detection" content="telephone=no">
 <link rel="icon" href="{asset('/favicon.svg')}" type="image/svg+xml">
 <link rel="apple-touch-icon" href="{asset('/apple-touch-icon.png')}">
-<link rel="preload" href="/fonts/noto-serif-display-latin-200-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/noto-serif-display-latin-300-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/hanken-grotesk-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/hanken-grotesk-latin-500-normal.woff2" as="font" type="font/woff2" crossorigin>{extra}
+<link rel="preload" href="/fonts/fredoka-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/fredoka-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>{extra}
 {GATE}
 <link rel="stylesheet" href="{asset('/css/tokens.css')}">
 <link rel="stylesheet" href="{asset('/css/style.css')}">
@@ -238,162 +236,161 @@ def store_ld(t):
 
 # ---------------------------------------------------------------- főoldal
 
+def sticker(n, cls, w, h, extra=''):
+    return f'<img class="stk {cls}" src="{asset(f"/img/matrica-{n}.webp")}" width="{w}" height="{h}" alt="" decoding="async" loading="lazy"{extra}>'
+
+
 def home(t):
     L = t['lang']
     fbbtn = btn(FB, tx(t, t['cta2']), 'secondary', t['cta2_aria'], True)
+    S = {'giraffe': (326, 574), 'jar': (283, 574), 'letters': (584, 354), 'rings': (584, 494), 'swirl': (584, 420), 'teddy': (418, 574), 'bottles': (486, 574)}
+    st = lambda n, cls, d='': sticker(n, cls, *S[n], f' data-depth="{d}"' if d else '')
 
-    # Kínálat: vízszintes galéria (asztali), telefonon egymás alatt
-    panels = []
+    # Kínálat: három egymásra csúszó, döntött kártya, mindegyiken egy kiugró matrica
+    cards = []
     for i, name in enumerate(t['rows'], 1):
         slot = ['', 'kinalat-1-kellekek', 'kinalat-2-alapanyagok', 'kinalat-3-dekoracio'][i]
         alts = t['row_alts'][i - 1]
-        main_ = img(slot, [400, 640, 960], 960, 1200, alts[0], '(min-width: 1100px) 30vw, 92vw')
-        ths = ''.join(f'<figure class="hz__th" data-tile-in>{img(f"kinalat-{i}-{x}", [400, 640], 640, 800, alts[j + 1], "(min-width: 1100px) 11vw, 30vw")}</figure>'
+        main_ = img(slot, [400, 640, 960], 960, 1200, alts[0], '(min-width: 1100px) 26vw, 80vw')
+        ths = ''.join(f'<figure class="kc__th">{img(f"kinalat-{i}-{x}", [400, 640], 640, 800, alts[j + 1], "(min-width: 1100px) 9vw, 26vw")}</figure>'
                       for j, x in enumerate('abc'))
-        panels.append(f"""        <article class="hz__panel" data-hz-panel>
-          <div class="hz__txt">
-            <p class="hz__num" aria-hidden="true">0{i}<span>/03</span></p>
-            <h3 class="hz__name" data-anim="lines">{tx(t, name)}</h3>
-            <p>{tx(t, t['row_txt'][i - 1])}</p>
-          </div>
-          <figure class="hz__main" data-tile-in><div class="hz__par" data-par>{main_}</div></figure>
-          <div class="hz__ths">{ths}</div>
-        </article>""")
-    panels = '\n'.join(panels)
-
-    # Torták és sütik: 5 kép + záró kártya a 3D gyűrűn
-    alk = [('alkotas-1', 680), ('alkotas-2', 852), ('alkotas-3', 680), ('alkotas-4', 852), ('alkotas-5', 680)]
-    cards = []
-    for i, (slot, h) in enumerate(alk):
-        cards.append(f'          <li class="rg__card" style="--i:{i}"><div class="rg__face">'
-                     + img(slot, [400, 680], 680, h, t['alk_alts'][i], '(min-width: 1100px) 20vw, 52vw')
-                     + '</div></li>')
-    cards.append(f"""          <li class="rg__card rg__card--cta" style="--i:5"><div class="rg__face">
-            <p>{tx(t, t['alk_p2'])}</p>
-            <p class="rg__links"><a class="tl" href="{IG}" target="_blank" rel="noopener" aria-label="{e(t['ig_aria'])}">{e(t['ig_link'])}</a><a class="tl" href="{FB}" target="_blank" rel="noopener" aria-label="{e(t['fb_aria'])}">{e(t['fb_link'])}</a></p>
-          </div></li>""")
+        sk = ['', 'rings', 'bottles', 'teddy'][i]
+        cards.append(f"""        <li class="kc kc--{i}" data-kc>
+          <article class="kc__in">
+            <div class="kc__txt">
+              <p class="kc__num" aria-hidden="true">{i}</p>
+              <h3 class="kc__name" data-pop>{tx(t, name)}</h3>
+              <p>{tx(t, t['row_txt'][i - 1])}</p>
+              <div class="kc__ths">{ths}</div>
+            </div>
+            <figure class="kc__main">{main_}</figure>
+            {st(sk, 'kc__stk')}
+          </article>
+        </li>""")
     cards = '\n'.join(cards)
+
+    # Torták és sütik: szétszórt polaroidok + cetli
+    alk = [('alkotas-1', 680), ('alkotas-2', 852), ('alkotas-3', 680), ('alkotas-4', 852), ('alkotas-5', 680)]
+    pols = ''.join(f'<li class="pol" style="--i:{i}" data-pol><figure class="pol__in">{img(slot, [400, 680], 680, h, t["alk_alts"][i], "(min-width: 1100px) 19vw, 46vw")}</figure></li>'
+                   for i, (slot, h) in enumerate(alk))
+    pols += f"""<li class="pol pol--note" style="--i:5" data-pol><div class="pol__note"><p>{tx(t, t['alk_p2'])}</p>
+            <p class="pol__links"><a class="tl" href="{IG}" target="_blank" rel="noopener" aria-label="{e(t['ig_aria'])}">{e(t['ig_link'])}</a><a class="tl" href="{FB}" target="_blank" rel="noopener" aria-label="{e(t['fb_aria'])}">{e(t['fb_link'])}</a></p></div></li>"""
 
     days = []
     for i, (d, h) in enumerate(t['days']):
-        dow = (i + 1) % 7  # JS getDay(): 0 = vasárnap
-        days.append(f'<tr data-day="{dow}"><th scope="row"><i class="hours__sq" aria-hidden="true"></i>{e(d)}<span class="hours__today" hidden>{e(t["today"])}</span></th><td>{e(h)}</td></tr>')
+        dow = (i + 1) % 7
+        days.append(f'<tr data-day="{dow}"><th scope="row">{e(d)}<span class="hours__today" hidden>{e(t["today"])}</span></th><td>{e(h)}</td></tr>')
     days = ''.join(days)
 
-    mark = ''.join(f'<span class="mk__l" style="--i:{i}">{c}</span>' for i, c in enumerate('HabVero'))
+    mark = ''.join(f'<span class="ch" style="--i:{i}">{c}</span>' for i, c in enumerate('HabVero'))
     brands = ['Callebaut', 'Decora', 'Silikomart', 'Fractal Colors', 'Cake Masters']
-    bset = ''.join(f'<li>{b}</li><li class="mq__sq" aria-hidden="true"></li>' for b in brands)
-    secs = ['top', 'bolt', 'kinalat', 'alkotasok', 'kartya', 'latogatas']
-    sx = ''.join(f'<li><a href="#{s}" tabindex="-1" data-sx="{s}"><i></i><span>{e(n)}</span></a></li>' for s, n in zip(secs, t['idx']))
-    ring_h = ''.join(f'<span class="rg__w rg__w--{k + 1}" aria-hidden="true">{e(w)}</span>' for k, w in enumerate(t['ring_words']))
+    bset = ''.join(f'<li>{b}</li><li class="tp__dot" aria-hidden="true">✿</li>' for b in brands)
+    pills = ''.join(f'<li class="pill pill--{k % 5}" data-pill>{e(p)}</li>' for k, p in enumerate(t['pills']))
+    fields = ''.join(f'<li class="lc__f" style="--i:{k}"><i class="lc__st" aria-hidden="true"></i></li>' for k in range(10))
+    drip = '<svg class="drip" viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true" focusable="false"><path d="M0 0H1440V40C1410 40 1404 58 1396 78C1388 98 1366 98 1360 78C1352 52 1340 40 1300 40C1240 40 1236 96 1210 104C1184 112 1174 70 1168 52C1160 40 1140 40 1100 40C1050 40 1046 62 1040 70C1032 82 1014 82 1008 66C1000 46 990 40 930 40C880 40 872 76 866 100C858 128 830 128 824 100C818 68 806 40 760 40C700 40 694 58 688 66C680 78 664 78 658 62C650 44 640 40 590 40C540 40 532 84 526 108C518 136 488 136 482 106C476 74 466 40 420 40C370 40 364 56 358 64C350 74 334 72 330 58C324 42 310 40 260 40C214 40 206 70 200 86C192 108 168 108 162 84C156 60 146 40 100 40C60 40 54 52 48 60C40 70 26 70 22 56C18 44 10 40 0 40Z"/></svg>'
 
     body = f"""
 <body class="pg pg--home">
 {header(t, 'home', True)}
-<nav class="sx" aria-hidden="true"><ol role="list">{sx}</ol></nav>
-<p class="edge" aria-hidden="true"><span>{e(t['edge_place'])}</span><span class="edge__sq"></span><span data-clock>--:--:--</span><span class="edge__sq"></span><span data-open><span data-open-text></span></span></p>
+<div class="curtain" aria-hidden="true" data-curtain-intro><div class="curtain__in"><p class="curtain__mk">{mark}</p></div>{drip}</div>
 <main id="main" class="main">
 
   <section id="top" class="hero" data-section="top" aria-labelledby="h-top">
-    <div class="hero__stage" data-hero-stage>
-      <figure class="hero__photo" data-hero-photo>
-        <picture>
-          <source media="(orientation: portrait) and (max-width: 1099px)" srcset="{asset('/img/hero-bolt-tall-640.webp')} 640w, {asset('/img/hero-bolt-tall-864.webp')} 864w" sizes="100vw">
-          <img src="{asset('/img/hero-bolt-wide-1400.webp')}" srcset="{asset('/img/hero-bolt-wide-800.webp')} 800w, {asset('/img/hero-bolt-wide-1400.webp')} 1400w, {asset('/img/hero-bolt-wide-2048.webp')} 2048w" sizes="100vw" width="2048" height="1152" alt="{e(t['hero_alt'])}" decoding="async" fetchpriority="high" data-hero-img>
-        </picture>
-      </figure>
-      <div class="mz" aria-hidden="true" data-mosaic></div>
-      <div class="hero__shade" aria-hidden="true"></div>
-    </div>
-    <div class="hero__body">
-      <div class="hero__row wrap">
-        <h1 id="h-top" class="hero__h1" data-anim="lines">{tx(t, t['h1'])}</h1>
-        <div class="hero__info">
-          <p class="hero__lede" data-anim="fade">{tx(t, t['lede'])}</p>
-          <p class="hero__addr" data-anim="fade">{tx(t, t['addr_line'])}<br><span class="open open--hero" data-open hidden><i class="open__sq" aria-hidden="true"></i><span data-open-text></span></span></p>
-          <p class="sr">{tx(t, t['hours_short'])}</p>
-          <div class="cta" data-anim="fade">
-            {btn(MAPS, tx(t, t['cta1']), 'primary', t['cta1'] + ' (' + t['newtab'] + ')', True)}
-            <div class="cta__ask">{fbbtn}</div>
-          </div>
-        </div>
-      </div>
-      <p class="hero__mark" aria-hidden="true"><span class="mk">{mark}</span></p>
-    </div>
-    <p class="hero__count" aria-hidden="true"><span data-count>000</span><span class="hero__count-l">{e(t['loading'])}</span></p>
-  </section>
-
-  <section class="mq" aria-label="{e(t['brands_label'])}" data-marquee>
-    <div class="mq__track" data-mq-track><ul class="mq__set" role="list">{bset}</ul><ul class="mq__set" role="list" aria-hidden="true">{bset}</ul></div>
-  </section>
-
-  <section id="bolt" class="sec st" data-section="bolt" data-flow aria-label="{e(t['idx'][1])}">
-    <div class="flow-dim" aria-hidden="true"></div>
-    <div class="wrap st__in">
-      <p class="st__p" data-words>{tx(t, t['stmt'])}</p>
-      <figure class="st__pic st__pic--a" data-par-y="-0.12">{img('kinalat-1-b', [400, 640], 640, 800, t['row_alts'][0][2], '(min-width: 1100px) 16vw, 40vw')}</figure>
-      <figure class="st__pic st__pic--b" data-par-y="0.1">{img('kinalat-2-a', [400, 640], 640, 800, t['row_alts'][1][1], '(min-width: 1100px) 13vw, 34vw')}</figure>
-    </div>
-  </section>
-
-  <section id="kinalat" class="sec hz" data-section="kinalat" data-hz aria-labelledby="h-kinalat">
-    <div class="hz__pin" data-hz-pin>
-      <div class="hz__track" data-hz-track>
-        <header class="hz__head">
-          <h2 id="h-kinalat" class="h2 hz__h2" data-anim="lines">{tx(t, t['h2_kinalat'])}</h2>
-          <p>{tx(t, t['kin_p2'])}</p>
-          <div class="cta">{fbbtn}</div>
-        </header>
-{panels}
-      </div>
-      <div class="hz__bar" aria-hidden="true"><i data-hz-bar></i></div>
-    </div>
-  </section>
-
-  <section id="alkotasok" class="sec rg" data-section="alkotasok" data-ring aria-labelledby="h-alkotasok">
-    <div class="rg__pin" data-ring-pin>
-      <h2 id="h-alkotasok" class="rg__h"><span class="sr">{e(t['h2_alkotasok'])}</span>{ring_h}</h2>
-      <div class="rg__view" data-ring-view>
-        <ul class="rg__ring" role="list" data-ring-el>
-{cards}
-        </ul>
-      </div>
-      <p class="rg__intro wrap">{tx(t, t['alk_p1'])}</p>
-    </div>
-  </section>
-
-  <section id="kartya" class="sec kt" data-section="kartya" aria-labelledby="h-kartya">
-    <div class="kt__band" data-kt>
-      <div class="kt__tiles" aria-hidden="true" data-kt-tiles></div>
-      <div class="wrap kt__in">
-        <div class="kt__txt">
-          <h2 id="h-kartya" class="h2" data-anim="lines">{tx(t, t['h2_kartya'])}</h2>
-          <p>{tx(t, t['kar_p1'])}</p>
-          <p>{tx(t, t['kar_p2'])}</p>
-          <p><a class="tl" href="{IG}" target="_blank" rel="noopener" aria-label="{e(t['ig_aria'])}">{e(t['ig_link'])}</a></p>
-        </div>
-        <figure class="kt__img" data-tilt><div class="kt__card">{img('kartya-polc', [560, 840], 840, 560, t['kar_alt'], '(min-width: 1100px) 40vw, 92vw')}</div></figure>
-      </div>
-    </div>
-  </section>
-
-  <section id="latogatas" class="sec visit" data-section="latogatas" data-flow aria-labelledby="h-latogatas">
-    <div class="flow-dim" aria-hidden="true"></div>
-    <div class="wrap visit__in">
-      <div class="visit__txt">
-        <h2 id="h-latogatas" class="h2" data-anim="lines">{tx(t, t['h2_latogatas'])}</h2>
-        <address class="nap"><span class="nap__name">{e(t['nap_name'])}</span><br>{tx(t, t['nap_addr'])}</address>
-        <table class="hours" data-hours>
-          <caption class="sr">{e(t['hours_caption'])}</caption>
-          <thead class="sr"><tr><th scope="col">{e(t['day_col'])}</th><th scope="col">{e(t['open_col'])}</th></tr></thead>
-          <tbody>{days}</tbody>
-        </table>
-        <div class="cta">
-          {btn(MAPS, tx(t, t['maps_open']), 'primary', t['maps_open'] + ' (' + t['newtab'] + ')', True)}
+    <canvas class="sprinkles" aria-hidden="true" data-sprinkles></canvas>
+    <div class="wrap hero__in">
+      <div class="hero__copy">
+        <h1 id="h-top" class="hero__h1" data-pop>{tx(t, t['h1'])}</h1>
+        <p class="hero__lede" data-rise>{tx(t, t['lede'])}</p>
+        <p class="hero__addr" data-rise>{tx(t, t['addr_line'])}</p>
+        <div class="cta" data-rise>
+          {btn(MAPS, tx(t, t['cta1']), 'primary', t['cta1'] + ' (' + t['newtab'] + ')', True)}
           <div class="cta__ask">{fbbtn}</div>
         </div>
       </div>
-      <figure class="visit__img" data-pix>{img('latogatas-bolt', [800, 1400, 2048], 2048, 1152, t['visit_alt'], '(min-width: 1100px) 50vw, 92vw')}<canvas class="visit__cv" aria-hidden="true"></canvas></figure>
+      <div class="hero__vis" data-hero-vis>
+        <figure class="arch" data-rise>
+          <picture>
+            <source media="(orientation: portrait) and (max-width: 1099px)" srcset="{asset('/img/hero-bolt-wide-phone-640.webp')} 640w, {asset('/img/hero-bolt-wide-phone-960.webp')} 960w" sizes="80vw">
+            <img src="{asset('/img/hero-bolt-wide-phone-960.webp')}" srcset="{asset('/img/hero-bolt-wide-phone-640.webp')} 640w, {asset('/img/hero-bolt-wide-phone-960.webp')} 960w, {asset('/img/hero-bolt-wide-phone-1229.webp')} 1229w" sizes="(min-width: 1100px) 38vw, 80vw" width="1229" height="1536" alt="{e(t['hero_alt'])}" decoding="async" fetchpriority="high">
+          </picture>
+        </figure>
+        <div class="badge" data-open-badge><svg viewBox="0 0 200 200" aria-hidden="true" focusable="false"><defs><path id="bp" d="M100 100m-74 0a74 74 0 1 1 148 0a74 74 0 1 1-148 0"/></defs><text><textPath href="#bp" data-open-ring>HabVero · Sopron · Torna utca 2. · HabVero · Sopron · Torna utca 2. ·</textPath></text></svg><span class="badge__c"><span class="open open--badge" data-open hidden><span data-open-text></span></span></span></div>
+        {st('giraffe', 'hs hs--1', '0.9')}{st('jar', 'hs hs--2', '0.5')}{st('letters', 'hs hs--3', '1.2')}{st('swirl', 'hs hs--4', '0.7')}
+      </div>
+    </div>
+  </section>
+
+  <section class="tp" aria-label="{e(t['brands_label'])}" data-tapes>
+    <div class="tp__band tp__band--a"><div class="tp__track" data-tape="1"><ul class="tp__set" role="list">{bset}</ul><ul class="tp__set" role="list" aria-hidden="true">{bset}</ul></div></div>
+    <div class="tp__band tp__band--b" aria-hidden="true"><div class="tp__track" data-tape="-1"><ul class="tp__set" role="list">{bset}</ul><ul class="tp__set" role="list">{bset}</ul></div></div>
+  </section>
+
+  <section id="bolt" class="sec polc" data-section="bolt" aria-labelledby="h-polc">
+    <div class="wrap polc__in">
+      <div class="polc__head">
+        <h2 id="h-polc" class="h2 big" data-pop>{tx(t, t['h2_polc'])}</h2>
+        <p data-rise>{tx(t, t['stmt'])}</p>
+      </div>
+      <div class="jar" data-jar><ul class="jar__pills" role="list">{pills}</ul></div>
+    </div>
+  </section>
+
+  <section id="kinalat" class="sec kin" data-section="kinalat" aria-labelledby="h-kinalat">
+    <div class="wrap kin__head">
+      <h2 id="h-kinalat" class="h2 big" data-pop>{tx(t, t['h2_kinalat'])}</h2>
+      <p data-rise>{tx(t, t['kin_p2'])}</p>
+      <div class="cta" data-rise>{fbbtn}</div>
+    </div>
+    <ol class="kin__stack wrap" role="list">
+{cards}
+    </ol>
+  </section>
+
+  <section id="alkotasok" class="sec tbl" data-section="alkotasok" aria-labelledby="h-alkotasok">
+    <div class="wrap tbl__head">
+      <h2 id="h-alkotasok" class="h2 big" data-pop>{tx(t, t['h2_alkotasok'])}</h2>
+      <p data-rise>{tx(t, t['alk_p1'])}</p>
+    </div>
+    <div class="wrap"><ul class="tbl__pile" role="list" data-pile>{pols}</ul></div>
+  </section>
+
+  <section id="kartya" class="sec lc" data-section="kartya" aria-labelledby="h-kartya">
+    <div class="wrap lc__in">
+      <div class="lc__txt">
+        <h2 id="h-kartya" class="h2 big" data-pop>{tx(t, t['h2_kartya'])}</h2>
+        <p data-rise>{tx(t, t['kar_p1'])}</p>
+        <p data-rise>{tx(t, t['kar_p2'])}</p>
+        <p data-rise><a class="tl" href="{IG}" target="_blank" rel="noopener" aria-label="{e(t['ig_aria'])}">{e(t['ig_link'])}</a></p>
+      </div>
+      <div class="lc__vis">
+        <div class="lcard" data-lcard aria-hidden="true">
+          <p class="lcard__brand">HabVero</p><p class="lcard__sub">{e(t['h2_kartya'])} · {e(t['card_fields'])}</p>
+          <ol class="lcard__f" role="list">{fields}</ol>
+        </div>
+        <figure class="lc__photo">{img('kartya-polc', [560, 840], 840, 560, t['kar_alt'], '(min-width: 1100px) 22vw, 60vw')}</figure>
+      </div>
+    </div>
+  </section>
+
+  <section id="latogatas" class="sec visit" data-section="latogatas" aria-labelledby="h-latogatas">
+    <div class="wrap">
+      <div class="visit__card">
+        <div class="visit__txt">
+          <h2 id="h-latogatas" class="h2 big" data-pop>{tx(t, t['h2_latogatas'])}</h2>
+          <address class="nap" data-rise><span class="nap__name">{e(t['nap_name'])}</span><br>{tx(t, t['nap_addr'])}</address>
+          <table class="hours" data-hours>
+            <caption class="sr">{e(t['hours_caption'])}</caption>
+            <thead class="sr"><tr><th scope="col">{e(t['day_col'])}</th><th scope="col">{e(t['open_col'])}</th></tr></thead>
+            <tbody>{days}</tbody>
+          </table>
+          <div class="cta">
+            {btn(MAPS, tx(t, t['maps_open']), 'primary', t['maps_open'] + ' (' + t['newtab'] + ')', True)}
+            <div class="cta__ask">{fbbtn}</div>
+          </div>
+        </div>
+        <figure class="visit__img arch arch--b">{img('latogatas-bolt', [800, 1400], 2048, 1152, t['visit_alt'], '(min-width: 1100px) 40vw, 86vw')}</figure>
+        {st('teddy', 'visit__stk', '0.6')}
+      </div>
     </div>
   </section>
 
@@ -403,10 +400,7 @@ def home(t):
 </body>
 </html>
 """
-    pre = (f'\n<link rel="preload" as="image" href="{asset("/img/hero-bolt-tall-640.webp")}" imagesrcset="{asset("/img/hero-bolt-tall-640.webp")} 640w, {asset("/img/hero-bolt-tall-864.webp")} 864w" '
-           f'imagesizes="100vw" media="(orientation: portrait) and (max-width: 1099px)" fetchpriority="high">'
-           f'\n<link rel="preload" as="image" href="{asset("/img/mozaik-200.webp")}" media="(min-width: 700px)">'
-           f'\n<link rel="preload" as="image" href="{asset("/img/mozaik-120.webp")}" media="(max-width: 699px)">'
+    pre = (f'\n<link rel="preload" href="/fonts/cherry-bomb-one-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>'
            f'\n<link rel="stylesheet" href="{asset("/css/home.css")}">')
     return head(t, t['title'], t['desc'], 'home', t['home'], store_ld(t), pre) + body
 
