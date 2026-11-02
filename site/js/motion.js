@@ -89,6 +89,12 @@ function split(el) {
   el.textContent = ''; el.append(sr, vis);
   return $$('.c', vis);
 }
+function popWords(el, delay = 0, gap = 70) {
+  split(el);
+  $$('.w', el).forEach((w, i) => anim(w, [
+    { transform: `translateY(.45em) scale(.6) rotate(${(i % 2 ? 6 : -6)}deg)`, opacity: 0 },
+    { transform: 'none', opacity: 1 }], { delay: delay + i * gap }));
+}
 function popLetters(el, delay = 0, gap = 26) {
   const cs = split(el);
   cs.forEach((c, i) => anim(c, [
@@ -180,7 +186,7 @@ function sprinkles() {
   let W = 0, H = 0, dpr = 1, vis = true, mx = -999, my = -999;
   const P = [];
   const size = () => {
-    W = cv.clientWidth; H = cv.clientHeight; dpr = Math.min(2, devicePixelRatio || 1);
+    W = cv.clientWidth; H = cv.clientHeight; dpr = Math.min(1.25, devicePixelRatio || 1);
     cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
   };
   size();
@@ -304,7 +310,7 @@ function jar() {
   pills.forEach((p) => p.classList.add('is-wait'));                  // üres üveg, amíg a címkék be nem esnek
   const pre = new IntersectionObserver(([e]) => {
     if (!e.isIntersecting) return; pre.disconnect();
-    loadScript('/js/vendor/matter.min.js?v=6').then(() => { M = window.Matter; if (!M) unhide(); else if (want) start(); }).catch(unhide);
+    loadScript('/js/vendor/matter.min.js?v=7').then(() => { M = window.Matter; if (!M) unhide(); else if (want) start(); }).catch(unhide);
   }, { rootMargin: '700px 0px' });
   pre.observe(jarEl);
   const go = new IntersectionObserver(([e]) => {
@@ -413,13 +419,11 @@ function stack() {
     const sh = document.createElement('i'); sh.className = 'kc__shade'; sh.setAttribute('aria-hidden', 'true'); inn.appendChild(sh);
     onEnter(inn, (now) => {
       if (now) return;
-      rise(inn, 0, 70);
       $$('.kc__th', li).forEach((t, i) => popIn(t, 260 + i * 110, i % 2 ? 12 : -12));
       const s = $('.kc__stk', li); if (s) popIn(s, 420, 40);
-      const img = $('.kc__main img', li); if (img) anim(img, [{ transform: 'scale(1.18)' }, { transform: 'none' }], { duration: 1400, easing: OUT });
     }, '0px 0px -8% 0px');
   });
-  if (!RICH) return;
+  return;   // v3.1: a görgetéshez kötött kártya-skálázás akadást okozott; a natív sticky egymásra csúszás marad
   const ol = cards[0].parentElement;
   const st = cards.map((li) => ({ li, inn: $('.kc__in', li), sh: $('.kc__shade', li), a: 0, b: 1, p: 0 }));
   let on = false;
@@ -567,7 +571,6 @@ function visit() {
   const card = $('.visit__card'); if (!card) return;
   onEnter(card, (now) => {
     if (now) return;
-    rise(card, 0, 80);
     $$('.hours tr', card).forEach((tr, i) => anim(tr, [{ transform: 'translateX(-26px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { delay: 300 + i * 70, easing: SOFT.e, duration: SOFT.d }));
     const im = $('.visit__img', card); if (im) anim(im, [{ transform: 'scale(.8) rotate(6deg)', opacity: 0 }, { transform: 'none', opacity: 1 }], { delay: 200 });
     const s = $('.visit__stk', card); if (s) popIn(s, 650, -40);
@@ -579,7 +582,7 @@ function reveals() {
   $$('[data-pop]').forEach((h) => {
     if (h.closest('.hero')) return;
     split(h);
-    onEnter(h, (now) => { if (!now) popLetters(h, 0, h.classList.contains('kc__name') ? 30 : 24); });
+    onEnter(h, (now) => { if (!now) popWords(h, 0); });
   });
   $$('[data-rise]').forEach((el) => { if (!el.closest('.hero')) onEnter(el, (now) => { if (!now) rise(el, 120); }); });
   const mk = $('.ft__mark');
@@ -639,7 +642,7 @@ function dollop(x, y) {
 /* ---------- lassabb, puha görgetés asztali gépen (Lenis, csak .rich) ---------- */
 function smooth() {
   if (!RICH) return;
-  loadScript('/js/vendor/lenis.min.js?v=6').then(() => {
+  loadScript('/js/vendor/lenis.min.js?v=7').then(() => {
     const L = globalThis.Lenis; if (!L) return;
     lenis = new L({ lerp: .075, wheelMultiplier: .85, smoothWheel: true, autoRaf: false });
     const lt = (t) => { lenis.raf(t); return !!lenis.isScrolling || Math.abs(lenis.targetScroll - lenis.animatedScroll) > .5; };
@@ -662,19 +665,20 @@ function smooth() {
 /* ================================================================ indulás */
 export function initMotion() {
   S.nav = parseFloat(getComputedStyle(R).getPropertyValue('--nav-h')) || 64;
-  sprinkles();
+  const SK = String(window.__skip || '');
+  const on = (n) => !SK.includes(n);
+  if (on('sprinkles')) sprinkles();
   hero();
   if (STILL) return;
   reveals();
-  tapes();
-  jar();
-  stack();
+  if (on('tapes')) tapes();
+  if (on('jar')) jar();
+  if (on('stack')) stack();
   pile();
   card();
   visit();
-  stickerParallax();
+  if (on('parallax')) stickerParallax();
   cursor();
-  smooth();
   addEventListener('scroll', () => { scrollKick(); passCheck(); }, { passive: true });
   let lw = innerWidth, lh = innerHeight;
   addEventListener('resize', () => {

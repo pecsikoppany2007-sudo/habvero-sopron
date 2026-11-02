@@ -11,7 +11,7 @@ from szotar import T, MAPS, FB, IG, ASK
 
 ROOT = Path(__file__).resolve().parent.parent / 'site'
 SITE = 'https://habvero-sopron.netlify.app'   # [?] éles domain a tulajdonostól
-V = 6
+V = 7
 NOINDEX = True                                # demó: noindex; élesítéskor False + netlify.toml X-Robots-Tag törlése
 LANGS = ['hu', 'de', 'en']
 

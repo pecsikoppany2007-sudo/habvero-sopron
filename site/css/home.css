@@ -16,7 +16,7 @@
 .c{display:inline-block;transform-origin:50% 90%}
 
 /* matrica alap */
-.stk{position:absolute;height:auto;max-width:none;pointer-events:none;user-select:none;filter:drop-shadow(0 6px 0 rgba(74,42,42,.12))}
+.stk{position:absolute;height:auto;max-width:none;pointer-events:none;user-select:none}
 @keyframes bob{0%,100%{translate:0 0;rotate:var(--r0,0deg)}50%{translate:0 -10px;rotate:calc(var(--r0,0deg) + 4deg)}}
 .stk{rotate:var(--r0,0deg)}
 :is(.rich,.touch) .stk{animation:bob var(--bob,5.5s) ease-in-out infinite;animation-delay:var(--bd,0s)}
@@ -125,6 +125,7 @@
 .kc--2{--rot:1deg}.kc--3{--rot:-.6deg}
 .kc__in{position:relative;display:grid;gap:clamp(20px,3vw,40px);padding:clamp(20px,3.2vw,44px);border:var(--bw) solid var(--cocoa);border-radius:clamp(28px,3vw,44px);
   box-shadow:0 10px 0 var(--cocoa);rotate:var(--rot);transform-origin:50% 0}
+.rich .kc__in{will-change:transform}
 .kc--1 .kc__in{background:var(--pk-pale)}.kc--2 .kc__in{background:var(--mint-pale)}.kc--3 .kc__in{background:var(--butter-pale)}
 .kc__shade{position:absolute;inset:0;border-radius:inherit;background:var(--cocoa);opacity:0;pointer-events:none;z-index:4}
 .kc__num{width:clamp(48px,4.4vw,64px);aspect-ratio:1;border-radius:50%;background:var(--cocoa);color:#fff;display:grid;place-items:center;

@@ -163,7 +163,7 @@ mark.todo{background:var(--pink-pale);color:var(--ink);padding:0 .2em;outline:1p
 .pg--legal .ft,.pg--404 .ft{position:relative}
 
 /* ---------- szemcse (csak valódi GPU-n) ---------- */
-.rich body::after,.touch:not(.is-gpu-soft) body::after{content:"";position:fixed;inset:0;height:100lvh;z-index:var(--z-grain);pointer-events:none;
+.grain-off body::after,.x-grain body::after{content:"";position:fixed;inset:0;height:100lvh;z-index:var(--z-grain);pointer-events:none;
   background:url("../img/grain.png?v=3") repeat;background-size:128px;opacity:var(--grain-opacity)}
 
 @media (prefers-reduced-motion:reduce){
